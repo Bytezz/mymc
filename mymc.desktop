@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=MyMC
+GenericName=PS2 Memory Card Utility
+Comment=Utility for working with PlayStation 2 memory card images.
+Exec=mymc
+Terminal=false
+Type=Application
+Icon=mymc
+Categories=Utility;Archiving;Compression;
+Keywords=ps2;memory;card;
