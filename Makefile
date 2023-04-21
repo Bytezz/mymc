@@ -40,7 +40,7 @@ configure:
 install:
 	# Executable $(DESTDIR)$(bindir)
 	mkdir -p $(DESTDIR)$(bindir)/
-	echo -e "#!/bin/bash\ncdir=\$$(dirname \$$BASH_SOURCE)\n\$$cdir/../share/mymc/mymc.py" > $(DESTDIR)$(bindir)/$(program)
+	echo -e "#!/bin/bash\ncdir=\$$(dirname \$$BASH_SOURCE)\n\$$PYTHON \$$cdir/../share/mymc/mymc.py" > $(DESTDIR)$(bindir)/$(program)
 	chmod +x $(DESTDIR)$(bindir)/$(program)
 	
 	# Launcher $(DESTDIR)$(applicationsdir)
@@ -102,6 +102,9 @@ dist-app:
 	$(INSTALL_DATA) $(program_id).desktop $(program_name).AppDir/$(program_name).desktop
 	
 	# Dependencies
+	mkdir -p $(program_name).AppDir/usr/bin
+	$(WGET) https://github.com/niess/linuxdeploy-plugin-python/releases/download/continuous/python2.7.17-x86_64.AppImage -O $(program_name).AppDir/usr/bin/python2.AppImage
+	chmod +x $(program_name).AppDir/usr/bin/python2.AppImage
 	mkdir -p $(program_name).AppDir/usr/lib/python2.7/site-packages
 	if [ -d "/usr/lib/python2.7/site-packages/wx" ]; then \
 		cp -r /usr/lib/python2.7/site-packages/wx $(program_name).AppDir/usr/lib/python2.7/site-packages; \
@@ -123,7 +126,7 @@ dist-app:
 		cp -r ~/.local/lib/python2.7/site-packages/attrdict-2.0.1.dist-info $(program_name).AppDir/usr/lib/python2.7/site-packages; \
 	fi
 	
-	echo -e "#!/bin/bash\ncdir=\$$(dirname \$$BASH_SOURCE)\n\$$cdir$(bindir)/$(program)" > $(program_name).AppDir/AppRun
+	echo -e "#!/bin/bash\ncdir=\$$(dirname \$$BASH_SOURCE)\nexport PYTHONPATH=\$$PYTHONPATH:\$$cdir/usr/lib/python2.7/site-packages\nexport PYTHON=\$$cdir/usr/bin/python2.AppImage\n\$$cdir$(bindir)/$(program)" > $(program_name).AppDir/AppRun
 	chmod +x $(program_name).AppDir/AppRun
 	ARCH=`uname -m` appimagetool $(program_name).AppDir
 
